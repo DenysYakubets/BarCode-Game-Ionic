@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title text-center><b>BARCODE GAME</b></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-fab top right edge>
+    <button ion-fab color="light"><ion-icon name="menu" color="danger"></ion-icon></button>
+    <ion-fab-list>
+      <button ion-fab icon-only color="royal" (click)="saveResult()">
+        <ion-icon name="checkmark"></ion-icon>
+      </button>
+
+      <button ion-fab icon-only color="royal" (click)="restoreResult()">
+        <ion-icon name="color-wand"></ion-icon>
+      </button>
+
+      <button ion-fab icon-only color="royal" (click)="sendResult()">
+        <ion-icon name="send"></ion-icon>
+      </button>
+
+      <button ion-fab icon-only color="danger" (click)="clearResultAndLogOut()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <ion-fab right bottom>
+    <button ion-fab color="danger" (click)="scanCode()"><ion-icon name="qr-scanner"></ion-icon></button>
+  </ion-fab>
+
+  <h3>[ {{nickname}} : {{gameID}} ]</h3> 
+
+  <div *ngIf="!barCodeList?.length" id="background-home-screen">
+    <img src="assets/images/zzz.png">
+  </div>
+
+  <ion-list>
+    <ion-item ion-item *ngFor="let item of barCodeList">
+      <h2>{{item.code}}</h2>
+      <p>{{item.time}}</p>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

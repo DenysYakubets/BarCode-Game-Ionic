@@ -1,0 +1,21 @@
+ion-content{
+    background-position: 50% 50%;
+    background-image: url(../assets/images/login-background.jpg);
+    background-size: cover;
+}
+
+#barCodeImage{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+}
+
+.login-input{
+    width: 100%;
+    font-size: 16pt;
+}
+
+h1 {
+    font-size: 20pt;
+}

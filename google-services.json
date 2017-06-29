@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "950416061320",
+    "firebase_url": "https://barcode-game-5bcd5.firebaseio.com",
+    "project_id": "barcode-game-5bcd5",
+    "storage_bucket": "barcode-game-5bcd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:950416061320:android:782726f90ca6791b",
+        "android_client_info": {
+          "package_name": "barcodegame.denysyakubets.tk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "950416061320-bsq2afnrc31vgiov86eflsbher3ri5v7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJH1iD9TWNCP7weOwaUq3erf2D0xTZYVQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,6 @@
+<ion-content padding>
+    <ion-input #nickname type="text" placeholder="nickname #" class="login-input" autofocus></ion-input>
+    <ion-input #gameid type="text" placeholder="game #" class="login-input"></ion-input>
+    <h1 text-center>BARCODE GAME</h1>
+    <img src="assets/images/barcode.png" id="barCodeImage" (click)="navigateToHomePage(nickname.value, gameid.value)">
+</ion-content>
