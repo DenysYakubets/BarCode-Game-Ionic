@@ -17,17 +17,19 @@ export class LoginPage {
   constructor(public navigation: NavController, public toast: Toast,
     private splashScreen: SplashScreen, private platform: Platform,
     private nativeStorage: NativeStorage, private loadingCtrl: LoadingController) {
-    this.platform.ready().then((readySource) => {
-      //What?
-      this.nativeStorage.getItem(LoginPage.GAME_ID_KEY).then(
-        gameID => {
-          this.nativeStorage.getItem(LoginPage.NICKNAME_ID_KEY).then(nickName => {
-            if (!nickName || 0 === nickName.length || !gameID || 0 === gameID.length) return;
-            this.navigateToHomePage(nickName, gameID);
-          });
-        }
-      );      
-      this.splashScreen.hide();
+
+    this.platform.ready().then(() => {
+
+      Promise.all([
+        this.nativeStorage.getItem(LoginPage.NICKNAME_ID_KEY),
+        this.nativeStorage.getItem(LoginPage.GAME_ID_KEY)
+      ])
+        .then(data => {
+          if (!data[0] || 0 === data[0].length || !data[1] || 0 === data[1].length) return;
+          this.navigateToHomePage(data[0], data[1]);
+          this.splashScreen.hide();
+        })
+        .catch(() => this.splashScreen.hide());
     });
   }
 
@@ -44,15 +46,14 @@ export class LoginPage {
     let loader = this.loadingCtrl.create();
     loader.present();
 
-    this.nativeStorage.setItem(LoginPage.GAME_ID_KEY, gameID)
+    Promise.all([
+      this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, nickname),
+      this.nativeStorage.setItem(LoginPage.GAME_ID_KEY, gameID)
+    ])
       .then(() => {
-        this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, nickname)
-          .then(
-          () => {
-            this.navigation.push(HomePage, { nickname: nickname, gameID: gameID });
-            loader.dismiss();
-          }).catch(() => loader.dismiss());
-      }
-      ).catch(() => loader.dismiss());
+        this.navigation.push(HomePage, { nickname: nickname, gameID: gameID });
+        loader.dismiss();
+      })
+      .catch(() => loader.dismiss());
   }
 }

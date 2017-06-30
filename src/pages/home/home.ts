@@ -18,6 +18,8 @@ export class HomePage {
   public barCodeList: BarCode[] = [];
   public nickname: string;
   public gameID: string;
+  public loader: any;
+  public sendBtnColor: string = "royal";
 
   constructor(
     private alertCtrl: AlertController, private barcodeScanner: BarcodeScanner,
@@ -29,6 +31,7 @@ export class HomePage {
 
       //Back button event
       this.platform.registerBackButtonAction(() => {
+        this.loader!.dismiss();
         this.clearResultAndLogOut();
       });
 
@@ -52,17 +55,17 @@ export class HomePage {
   }
 
   scanCode() {
-    this.barcodeScanner.scan().then((barcodeData) => {
-      if (!barcodeData.text || 0 === barcodeData.text.trim().length) return;
-      this.barCodeList.push(new BarCode(barcodeData.text, this.getDateTime(Date.now())));
-      this.scrollToBottom();
-    }, (err) => {
-      this.toast.show(err, '5000', 'bottom').subscribe();
-    });
+    // this.barcodeScanner.scan().then((barcodeData) => {
+    //   if (!barcodeData.text || 0 === barcodeData.text.trim().length) return;
+    //   this.barCodeList.push(new BarCode(barcodeData.text, this.getDateTime(Date.now())));
+    //   this.scrollToBottom();
+    // }, (err) => {
+    //   this.toast.show(err, '5000', 'bottom').subscribe();
+    // });
 
     // Debug mode
-    // this.barCodeList.push(new BarCode("barcodeData.text", this.getDateTime(Date.now())));
-    // this.scrollToBottom();
+    this.barCodeList.push(new BarCode("barcodeData.text", this.getDateTime(Date.now())));
+    this.scrollToBottom();
   }
 
   saveResult() {
@@ -102,8 +105,10 @@ export class HomePage {
   }
 
   saveGameAndNickName() {
-    this.nativeStorage.setItem(LoginPage.GAME_ID_KEY, this.gameID)
-      .then(() => { this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, this.nickname).then() });
+    Promise.all([
+        this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, this.nickname),
+        this.nativeStorage.setItem(LoginPage.GAME_ID_KEY, this.gameID)
+        ]).then();    
   }
 
   clearResultAndLogOut() {
@@ -135,19 +140,20 @@ export class HomePage {
 
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    let loader = this.loadingCtrl.create();
-    loader.present();
+    this.loader = this.loadingCtrl.create();
+    this.loader.present();
 
     this.http.post("https://barcode-game.denysyakubets.tk/saveResult.php?game='"
       + this.gameID + "'&nick='" + this.nickname + "'", this.barCodeList, options)
       .subscribe(
       data => {
         this.toast.showShortBottom('Complete!').subscribe();
-        loader.dismiss();
+        this.sendBtnColor = "light-green";
+        this.loader.dismiss();
       },
       error => {
         this.toast.showShortBottom('Error! ' + error).subscribe();
-        loader.dismiss();
+        this.loader.dismiss();
       }
       );
   }
