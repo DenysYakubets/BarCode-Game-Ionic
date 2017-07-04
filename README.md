@@ -1,7 +1,7 @@
 <h2>Create your own</h3>
 <h1>BARCODE GAME</h2>
 <h3 class="text-center">How it works?</h3>
-![alt text](https://barcode-game.denysyakubets.tk/images/flow.png)
+<img src="https://barcode-game.denysyakubets.tk/images/flow.png"/>
 <ol>
 <li><b>Think up your own scenario of game.</b><br><i>For example, you hid candies in a big red box.</i></li>
 
@@ -45,5 +45,5 @@ Note:
 <li>Send finish results.</li>
 </ol>
 <a href="https://play.google.com/store/apps/details?id=barcodegame.denysyakubets.tk&hl=ru" target="_blank">
-![alt text](https://barcode-game.denysyakubets.tk/images/gplay.png)
+<img src="https://barcode-game.denysyakubets.tk/images/gplay.png"/>
 </a>
