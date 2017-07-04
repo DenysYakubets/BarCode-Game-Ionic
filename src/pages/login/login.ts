@@ -11,7 +11,6 @@ import { NativeStorage } from '@ionic-native/native-storage';
   templateUrl: 'login.html'
 })
 export class LoginPage {
-  public static GAME_ID_KEY: string = "GAME_ID_KEY";
   public static NICKNAME_ID_KEY: string = "NICKNAME_ID_KEY";
 
   constructor(public navigation: NavController, public toast: Toast,
@@ -19,39 +18,28 @@ export class LoginPage {
     private nativeStorage: NativeStorage, private loadingCtrl: LoadingController) {
 
     this.platform.ready().then(() => {
-
-      Promise.all([
-        this.nativeStorage.getItem(LoginPage.NICKNAME_ID_KEY),
-        this.nativeStorage.getItem(LoginPage.GAME_ID_KEY)
-      ])
-        .then(data => {
-          if (!data[0] || 0 === data[0].length || !data[1] || 0 === data[1].length) return;
-          this.navigateToHomePage(data[0], data[1]);
+      this.nativeStorage.getItem(LoginPage.NICKNAME_ID_KEY)
+        .then(nickname => {
+          if (!nickname || 0 === nickname.length) return;
+          this.navigateToHomePage(nickname);
           this.splashScreen.hide();
         })
         .catch(() => this.splashScreen.hide());
     });
   }
 
-  navigateToHomePage(nickname: string, gameID: string) {
+  navigateToHomePage(nickname: string) {
     if (!nickname || 0 === nickname.length) {
       this.toast.showShortBottom("nickname ?").subscribe();
-      return;
-    }
-    if (!gameID || 0 === gameID.length) {
-      this.toast.showShortBottom("game # ?").subscribe();
       return;
     }
 
     let loader = this.loadingCtrl.create();
     loader.present();
 
-    Promise.all([
-      this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, nickname),
-      this.nativeStorage.setItem(LoginPage.GAME_ID_KEY, gameID)
-    ])
+    this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, nickname)
       .then(() => {
-        this.navigation.push(HomePage, { nickname: nickname, gameID: gameID });
+        this.navigation.push(HomePage, { nickname: nickname });
         loader.dismiss();
       })
       .catch(() => loader.dismiss());

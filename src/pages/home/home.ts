@@ -17,7 +17,6 @@ export class HomePage {
   @ViewChild(Content) content: Content;
   public barCodeList: BarCode[] = [];
   public nickname: string;
-  public gameID: string;
   public loader: any;
   public sendBtnColor: string = "royal";
 
@@ -38,15 +37,13 @@ export class HomePage {
       //if app goes sleep - save all data
       this.platform.pause.subscribe(() => {
         this.saveResult();
-        this.saveGameAndNickName();
+        this.saveNickName();
       });
     });
   }
 
   ionViewDidLoad() {
     this.nickname = this.navParams.get('nickname');
-    this.gameID = this.navParams.get('gameID');
-
     this.restoreLastList();
   }
 
@@ -88,14 +85,14 @@ export class HomePage {
   restoreLastList() {
     this.nativeStorage.keys().then(
       keys => {
-        if (keys.length <= 2) return;
+        if (keys.length <= 1) return;
 
         let sortedKeys = keys.sort();
         sortedKeys = sortedKeys.reverse();
 
-        // 0 - GAME 1 - NICK - 2 - LAST DATA
+        // 0 - NICK - 1 - LAST DATA
         // TODO: change logic of getting last data
-        this.nativeStorage.getItem(sortedKeys[2]).then(
+        this.nativeStorage.getItem(sortedKeys[1]).then(
           data => { this.barCodeList = data; this.scrollToBottom(); },
           error => error => this.toast.show(error, '5000', 'bottom').subscribe()
         );
@@ -104,11 +101,8 @@ export class HomePage {
     );
   }
 
-  saveGameAndNickName() {
-    Promise.all([
-      this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, this.nickname),
-      this.nativeStorage.setItem(LoginPage.GAME_ID_KEY, this.gameID)
-    ]).then();
+  saveNickName() {
+    this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, this.nickname).then();
   }
 
   clearResultAndLogOut() {
@@ -138,13 +132,41 @@ export class HomePage {
   sendResult() {
     if (this.barCodeList.length <= 0) return;
 
+
+    let alert = this.alertCtrl.create({
+      inputs: [
+        {
+          name: 'gameName',
+          placeholder: 'game #'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Send',
+          handler: data => {
+            this.sendDataToServe(data.gameName);
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  private sendDataToServe(gameName: string) {
+    if (!gameName || 0 === gameName.length)
+      return;
+
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
     this.loader = this.loadingCtrl.create();
     this.loader.present();
 
     this.http.post("https://barcode-game.denysyakubets.tk/saveResult.php?game="
-      + this.gameID + "&nick=" + this.nickname, this.barCodeList, options)
+      + gameName + "&nick=" + this.nickname, this.barCodeList, options)
       .subscribe(
       data => {
         this.loader.dismiss();
@@ -178,14 +200,14 @@ export class HomePage {
   }
 
   private showListSavedKeys(keys: any) {
-    if (keys.length <= 2) return;
+    if (keys.length <= 1) return;
 
     let sortedKeys = keys.sort();
     sortedKeys = sortedKeys.reverse();
 
     let alert = this.alertCtrl.create();
     sortedKeys.forEach(element => {
-      if (element == LoginPage.GAME_ID_KEY || element == LoginPage.NICKNAME_ID_KEY) return;
+      if (element == LoginPage.NICKNAME_ID_KEY) return;
 
       alert.addInput({
         type: 'radio',
