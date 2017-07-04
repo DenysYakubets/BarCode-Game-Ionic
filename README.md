@@ -1,4 +1,3 @@
-<h2>Create your own</h3>
 <h1>BARCODE GAME</h2>
 <h3 class="text-center">How it works?</h3>
 <img src="https://barcode-game.denysyakubets.tk/images/flow.png"/>
