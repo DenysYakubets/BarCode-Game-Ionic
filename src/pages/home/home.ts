@@ -55,17 +55,17 @@ export class HomePage {
   }
 
   scanCode() {
-    // this.barcodeScanner.scan().then((barcodeData) => {
-    //   if (!barcodeData.text || 0 === barcodeData.text.trim().length) return;
-    //   this.barCodeList.push(new BarCode(barcodeData.text, this.getDateTime(Date.now())));
-    //   this.scrollToBottom();
-    // }, (err) => {
-    //   this.toast.show(err, '5000', 'bottom').subscribe();
-    // });
+    this.barcodeScanner.scan().then((barcodeData) => {
+      if (!barcodeData.text || 0 === barcodeData.text.trim().length) return;
+      this.barCodeList.push(new BarCode(barcodeData.text, this.getDateTime(Date.now())));
+      this.scrollToBottom();
+    }, (err) => {
+      this.toast.show(err, '5000', 'bottom').subscribe();
+    });
 
     // Debug mode
-    this.barCodeList.push(new BarCode("barcodeData.text", this.getDateTime(Date.now())));
-    this.scrollToBottom();
+    // this.barCodeList.push(new BarCode("barcodeData.text", this.getDateTime(Date.now())));
+    // this.scrollToBottom();
   }
 
   saveResult() {
@@ -106,9 +106,9 @@ export class HomePage {
 
   saveGameAndNickName() {
     Promise.all([
-        this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, this.nickname),
-        this.nativeStorage.setItem(LoginPage.GAME_ID_KEY, this.gameID)
-        ]).then();    
+      this.nativeStorage.setItem(LoginPage.NICKNAME_ID_KEY, this.nickname),
+      this.nativeStorage.setItem(LoginPage.GAME_ID_KEY, this.gameID)
+    ]).then();
   }
 
   clearResultAndLogOut() {
@@ -143,16 +143,24 @@ export class HomePage {
     this.loader = this.loadingCtrl.create();
     this.loader.present();
 
-    this.http.post("https://barcode-game.denysyakubets.tk/saveResult.php?game='"
-      + this.gameID + "'&nick='" + this.nickname + "'", this.barCodeList, options)
+    this.http.post("https://barcode-game.denysyakubets.tk/saveResult.php?game="
+      + this.gameID + "&nick=" + this.nickname, this.barCodeList, options)
       .subscribe(
       data => {
-        this.toast.showShortBottom('Complete!').subscribe();
-        this.sendBtnColor = "light-green";
         this.loader.dismiss();
+        console.log(data);
+        if (data.status == 200) {
+          this.toast.showShortBottom('Complete!').subscribe();
+          this.sendBtnColor = "light-green";
+        }
+        else {
+          this.toast.showLongBottom('Error! Something went wrong. Please, try again later.').subscribe();
+          this.sendBtnColor = "light-danger";
+        }
       },
       error => {
-        this.toast.showShortBottom('Error! ' + error).subscribe();
+        this.toast.showShortBottom('Something went wrong. Maybe you set wrong game name.').subscribe();
+        this.sendBtnColor = "light-danger";
         this.loader.dismiss();
       }
       );
