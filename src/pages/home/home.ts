@@ -1,7 +1,7 @@
 import { LoginPage } from './../login/login';
 import { BarCode } from './bar-code';
 import { Component, ViewChild } from '@angular/core';
-import { Content, AlertController, NavParams, Platform, LoadingController, NavController } from 'ionic-angular';
+import { Content, AlertController, NavParams, Platform, LoadingController, NavController, App } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { NativeStorage } from '@ionic-native/native-storage';
 import { Toast } from '@ionic-native/toast';
@@ -24,14 +24,21 @@ export class HomePage {
     private alertCtrl: AlertController, private barcodeScanner: BarcodeScanner,
     private nativeStorage: NativeStorage, private toast: Toast,
     private navParams: NavParams, private platform: Platform,
-    private http: Http, public loadingCtrl: LoadingController,
-    public navigation: NavController) {
+    private http: Http, private loadingCtrl: LoadingController,
+    private navigation: NavController, private app: App) {
     this.platform.ready().then(() => {
 
       //Back button event
       this.platform.registerBackButtonAction(() => {
-        this.loader!.dismiss();
-        this.clearResultAndLogOut();
+        let nav = this.app.getActiveNav();
+        if (nav.getActive().instance instanceof HomePage){
+          if(this.loader !== undefined) this.loader!.dismiss();
+          this.clearResultAndLogOut();
+        }else if(nav.canGoBack()) {
+          nav.pop();
+        }else{
+          this.platform.exitApp(); 
+        }
       });
 
       //if app goes sleep - save all data
@@ -107,12 +114,12 @@ export class HomePage {
 
   clearResultAndLogOut() {
     let alert = this.alertCtrl.create({
-      title: 'Delete all and exit?',
+      title: 'Clear all and exit?',
       buttons: [
         {
           text: 'No',
           role: 'cancel',
-        },
+        },        
         {
           text: 'Yes',
           handler: () => {
