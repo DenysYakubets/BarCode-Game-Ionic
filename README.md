@@ -4,7 +4,7 @@
 <ol>
 <li><b>Think up your own scenario of game.</b><br><i>For example, you hid candies in a big red box.</i></li>
 
-<li><b>Generate barcodes (<a href="http://online-barcode-generator.net/">here</a> or another website) and print it.</b><br><i>For example, candies position. "BIG" - "RED" - "BOX" 3 different qr codes.</li>
+<li><b>Generate barcodes (<a href="http://online-barcode-generator.net/">here</a> or another website) and print it.</b><br><i>For example, candies location. "BIG" - "RED" - "BOX" 3 different qr codes.</li>
 
 <li><b>Hide barcodes in different places.</b><br><i>For example, "BIG" barcode on a table, "RED" on a floor, "BOX" in front of a computer monitor.</i></li>
 
